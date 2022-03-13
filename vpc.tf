@@ -55,6 +55,14 @@ resource "aws_subnet" "private_subnet_nginx" {
 resource "aws_eip" "eip" {
   vpc = true
 }
+resource "aws_nat_gateway" "nat_gateway" {
+  allocation_id = aws_eip.eip.id
+  subnet_id = aws_subnet.public_subnet.id
+  tags = {
+    "Name" = "nat_gateway"
+  }
+}
+
 
 
 resource "aws_route_table" "public_rt" {
