@@ -1,6 +1,12 @@
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 # Create a VPC
 resource "aws_vpc" "laboratorio_vpc" {
   cidr_block = var.vpc_cidr
+   enable_dns_support   = true
+   enable_dns_hostnames = true
 
   tags = {
     Name = "laboratorio-vpc"
@@ -19,12 +25,37 @@ resource "aws_subnet" "public_subnet" {
   vpc_id            = aws_vpc.laboratorio_vpc.id
   cidr_block        = var.public_subnet_cidr
   map_public_ip_on_launch = true
-  availability_zone = var.availability_zone
+  availability_zone = "us-east-1a"
 
   tags = {
     Name = "public-subnet"
   }
 }
+
+resource "aws_subnet" "private_subnet_apache" {
+  vpc_id            = aws_vpc.laboratorio_vpc.id
+  cidr_block        = var.private_subnet_apache_cidr
+  availability_zone = "us-east-1b"
+
+  tags = {
+    Name = "private-subnet-apache2"
+  }
+}
+
+resource "aws_subnet" "private_subnet_nginx" {
+  vpc_id            = aws_vpc.laboratorio_vpc.id
+  cidr_block        = var.private_subnet_nginx_cidr
+  availability_zone = "us-east-1c"
+
+  tags = {
+    Name = "private-subnet-nginx"
+  }
+}
+
+resource "aws_eip" "eip" {
+  vpc = true
+}
+
 
 resource "aws_route_table" "public_rt" {
   vpc_id = aws_vpc.laboratorio_vpc.id
