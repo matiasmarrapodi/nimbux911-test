@@ -7,7 +7,7 @@ resource "aws_lb" "alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.sg.id]
-  subnets = [aws_subnet.private_subnet_apache.id,aws_subnet.private_subnet_nginx.id]
+  subnets = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
 }
 
 
@@ -54,20 +54,3 @@ resource "aws_lb_listener" "this" {
     type             = "forward"
   }
 }
-
-
-# resource "aws_lb_listener" "front_end" {
-#   load_balancer_arn = aws_lb.lb.arn
-#   port              = "80"
-#   protocol          = "HTTP"
-
-#   default_action {
-#     type = "redirect"
-
-#     redirect {
-#       port        = "443"
-#       protocol    = "HTTPS"
-#       status_code = "HTTP_301"
-#     }
-#   }
-# }
