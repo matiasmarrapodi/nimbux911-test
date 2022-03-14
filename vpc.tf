@@ -1,7 +1,3 @@
-data "aws_availability_zones" "available" {
-  state = "available"
-}
-
 # Create a VPC
 resource "aws_vpc" "laboratorio_vpc" {
   cidr_block = var.vpc_cidr
@@ -21,21 +17,32 @@ resource "aws_internet_gateway" "vpc_igw" {
   }
 }
 
-resource "aws_subnet" "public_subnet" {
+resource "aws_subnet" "public_subnet_1" {
   vpc_id            = aws_vpc.laboratorio_vpc.id
-  cidr_block        = var.public_subnet_cidr
+  cidr_block        = var.public_subnet_1_cidr
   map_public_ip_on_launch = true
-  availability_zone = "us-east-1a"
+  availability_zone = "us-east-2b"
 
   tags = {
-    Name = "public-subnet"
+    Name = "public-subnet-1"
+  }
+}
+
+resource "aws_subnet" "public_subnet_2" {
+  vpc_id            = aws_vpc.laboratorio_vpc.id
+  cidr_block        = var.public_subnet_2_cidr
+  map_public_ip_on_launch = true
+  availability_zone = "us-east-2c"
+
+  tags = {
+    Name = "public-subnet-2"
   }
 }
 
 resource "aws_subnet" "private_subnet_apache" {
   vpc_id            = aws_vpc.laboratorio_vpc.id
   cidr_block        = var.private_subnet_apache_cidr
-  availability_zone = "us-east-1b"
+  availability_zone = "us-east-2b"
 
   tags = {
     Name = "private-subnet-apache2"
@@ -45,7 +52,7 @@ resource "aws_subnet" "private_subnet_apache" {
 resource "aws_subnet" "private_subnet_nginx" {
   vpc_id            = aws_vpc.laboratorio_vpc.id
   cidr_block        = var.private_subnet_nginx_cidr
-  availability_zone = "us-east-1c"
+  availability_zone = "us-east-2c"
 
   tags = {
     Name = "private-subnet-nginx"
@@ -57,7 +64,7 @@ resource "aws_eip" "eip" {
 }
 resource "aws_nat_gateway" "nat_gateway" {
   allocation_id = aws_eip.eip.id
-  subnet_id = aws_subnet.public_subnet.id
+  subnet_id = aws_subnet.public_subnet_1.id
   tags = {
     "Name" = "nat_gateway"
   }
@@ -79,7 +86,7 @@ resource "aws_route_table" "public_rt" {
 }
 
 resource "aws_route_table_association" "public_rt_asso" {
-  subnet_id      = aws_subnet.public_subnet.id
+  subnet_id      = aws_subnet.public_subnet_1.id
   route_table_id = aws_route_table.public_rt.id
 }
 
