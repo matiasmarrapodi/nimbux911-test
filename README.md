@@ -1,4 +1,9 @@
-# Exercise for Nimbux
+# Exercise for Nimbux911
+
+Overview:
+
+For this exercise I have deployed two ec2 instances on the privated subnet with nat gateway and I installed nginx on docker and apache.
+I have used application load balancer in the public subnet.
 
 * [Architecture for this solution](#Architecture-for-this-solution)
 
