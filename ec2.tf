@@ -5,7 +5,7 @@ resource "aws_instance" "apache" {
   security_groups = [aws_security_group.sg.id]
   key_name = var.key_name
   user_data = "${file("install_apache.sh")}"
-
+  depends_on = [aws_route_table_association.private]
   tags = {
     Name = "apache"
   }
@@ -20,7 +20,7 @@ resource "aws_instance" "nginx" {
   instance_type   = var.instance_type
   subnet_id       = aws_subnet.private_subnet.id
   security_groups = [aws_security_group.sg.id]
-  key_name = var.key_name
+  depends_on = [aws_route_table_association.private]
 
   user_data = "${file("install_nginx.sh")}"
 
